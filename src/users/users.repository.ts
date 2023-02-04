@@ -65,17 +65,10 @@ export class UsersRepository {
 
       return { ...otherFields };
     }
+  }
 
-    // for DB
-    // const contents = await readFile('users.json', 'utf8');
-    // const users = JSON.parse(contents);
-    // const id = uuid();
-    // const version = 0;
-    // const createdAt = Date.now();
-    // const updatedAt = createdAt;
-    // const newUser = { id, ...user, version, createdAt, updatedAt };
-    // users[id] = newUser;
-    // await writeFile('users.json', JSON.stringify(users));
-    // return newUser;
+  async deleteUser(id: string) {
+    const user = this.users[id];
+    return user && delete this.users[id];
   }
 }

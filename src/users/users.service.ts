@@ -21,4 +21,7 @@ export class UsersService {
   updatePassword(id: string, passwords: UpdatePasswordDto) {
     return this.usersRepo.updatePassword(id, passwords);
   }
+  deleteUser(id: string) {
+    return this.usersRepo.deleteUser(id);
+  }
 }

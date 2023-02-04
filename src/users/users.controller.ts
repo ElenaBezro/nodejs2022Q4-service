@@ -9,6 +9,8 @@ import {
   Put,
   HttpException,
   HttpStatus,
+  Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
@@ -64,6 +66,15 @@ export class UsersController {
     return userWithNewPassword;
   }
 
-  // @Delete('/:id')
-  // getUser() {}
+  @Delete('/:id')
+  @HttpCode(204)
+  async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.usersService.deleteUser(id);
+  }
 }
