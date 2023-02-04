@@ -24,6 +24,7 @@ export class TracksController {
   }
 
   @Post()
+  //TODO: check id in payload
   createTrack(@Body() body: CreateTrackDto) {
     return this.tracksService.create(body);
   }
@@ -39,6 +40,7 @@ export class TracksController {
   }
 
   @Put('/:id')
+  //TODO: check id in payload
   async updateTrack(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateTrackDto,
