@@ -6,5 +6,6 @@ import { UsersRepository } from './users.repository';
   controllers: [UsersController],
   //providers - thingsThatCanBeUsedAsDependenciesForOtherClasses
   providers: [UsersRepository, UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
