@@ -6,8 +6,12 @@ import {
   Post,
   NotFoundException,
   ParseUUIDPipe,
+  Put,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { UsersService } from './users.service';
 
 @Controller('user')
@@ -38,8 +42,27 @@ export class UsersController {
     return user;
   }
 
-  // @Put('/:id')
-  // getUser() {}
+  @Put('/:id')
+  async updatePassword(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: UpdatePasswordDto,
+  ) {
+    const user = await this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const userWithNewPassword = await this.usersService.updatePassword(
+      id,
+      body,
+    );
+    if (!userWithNewPassword) {
+      throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
+    }
+
+    return userWithNewPassword;
+  }
 
   // @Delete('/:id')
   // getUser() {}

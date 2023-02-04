@@ -1,5 +1,6 @@
 // import { readFile, writeFile } from 'fs/promises';
 import { v4 } from 'uuid';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { CreateUserPayload, User } from './types';
 
 export class UsersRepository {
@@ -34,6 +35,37 @@ export class UsersRepository {
     const { password, ...otherFields } = newUser;
 
     return { ...otherFields };
+    // for DB
+    // const contents = await readFile('users.json', 'utf8');
+    // const users = JSON.parse(contents);
+    // const id = uuid();
+    // const version = 0;
+    // const createdAt = Date.now();
+    // const updatedAt = createdAt;
+    // const newUser = { id, ...user, version, createdAt, updatedAt };
+    // users[id] = newUser;
+    // await writeFile('users.json', JSON.stringify(users));
+    // return newUser;
+  }
+
+  async updatePassword(id: string, passwords: UpdatePasswordDto) {
+    const user = this.users[id];
+    let { version, updatedAt } = user;
+    if (user.password === passwords.oldPassword) {
+      version = version + 1;
+      updatedAt = Date.now();
+      const newUser = {
+        ...user,
+        password: passwords.newPassword,
+        version,
+        updatedAt,
+      };
+      this.users[id] = newUser;
+      const { password, ...otherFields } = newUser;
+
+      return { ...otherFields };
+    }
+
     // for DB
     // const contents = await readFile('users.json', 'utf8');
     // const users = JSON.parse(contents);

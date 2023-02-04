@@ -1,3 +1,4 @@
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { CreateUserPayload } from './types';
 import { UsersRepository } from './users.repository';
 
@@ -16,5 +17,8 @@ export class UsersService {
   }
   create(user: CreateUserPayload) {
     return this.usersRepo.create(user);
+  }
+  updatePassword(id: string, passwords: UpdatePasswordDto) {
+    return this.usersRepo.updatePassword(id, passwords);
   }
 }
