@@ -14,7 +14,7 @@ import { CreateTrackDto } from './dtos/create-track.dto';
 import { UpdateTrackDto } from './dtos/update-track.dto';
 import { TracksService } from './tracks.service';
 
-@Controller('tracks')
+@Controller('track')
 export class TracksController {
   constructor(private tracksService: TracksService) {}
 
@@ -64,5 +64,6 @@ export class TracksController {
     }
 
     await this.tracksService.deleteTrack(id);
+    //TODO: delete track from favorites
   }
 }
