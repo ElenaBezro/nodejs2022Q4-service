@@ -1,8 +1,10 @@
 // import { readFile, writeFile } from 'fs/promises';
+import { Injectable } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { CreateUserPayload, User } from './types';
 
+@Injectable()
 export class UsersRepository {
   private users: Record<string, User> = {};
 

@@ -1,13 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { CreateUserPayload } from './types';
 import { UsersRepository } from './users.repository';
 
+@Injectable()
 export class UsersService {
-  usersRepo: UsersRepository;
-
-  constructor() {
-    this.usersRepo = new UsersRepository();
-  }
+  constructor(public usersRepo: UsersRepository) {}
 
   async findOne(id: string) {
     return await this.usersRepo.findOne(id);

@@ -17,11 +17,7 @@ import { UsersService } from './users.service';
 
 @Controller('user')
 export class UsersController {
-  usersService: UsersService;
-
-  constructor() {
-    this.usersService = new UsersService();
-  }
+  constructor(public usersService: UsersService) {}
 
   @Get()
   listUsers() {
