@@ -7,10 +7,9 @@ import {
   NotFoundException,
   ParseUUIDPipe,
   Put,
-  HttpException,
-  HttpStatus,
   Delete,
   HttpCode,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
@@ -60,7 +59,7 @@ export class UsersController {
       body,
     );
     if (!userWithNewPassword) {
-      throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException('Wrong password');
     }
 
     return userWithNewPassword;
