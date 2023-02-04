@@ -29,7 +29,7 @@ export class UsersRepository {
   }
   async create(user: CreateUserPayload) {
     const id = v4();
-    const version = 0;
+    const version = 1;
     const createdAt = Date.now();
     const updatedAt = createdAt;
     const newUser = { id, ...user, version, createdAt, updatedAt };

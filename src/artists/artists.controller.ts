@@ -10,13 +10,17 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { TracksService } from 'src/tracks/tracks.service';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dtos/create-artist.dto';
 import { UpdateArtistDto } from './dtos/update-artist.dto';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(private artistsService: ArtistsService) {}
+  constructor(
+    private artistsService: ArtistsService,
+    private trackService: TracksService,
+  ) {}
 
   @Get()
   listArtists() {
@@ -64,6 +68,14 @@ export class ArtistsController {
     }
 
     await this.artistsService.deleteArtist(id);
-    //TODO: delete artist from favorites
+    const tracks = await this.trackService.findAll();
+    for (const track of tracks) {
+      if (track.artistId === id) {
+        await this.trackService.updateTrack(track.id, {
+          ...track,
+          artistId: null,
+        });
+      }
+    }
   }
 }

@@ -10,13 +10,17 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { TracksService } from 'src/tracks/tracks.service';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dtos/create-album.dto';
 import { UpdateAlbumDto } from './dtos/update-album.dto';
 
 @Controller('album')
 export class AlbumsController {
-  constructor(private albumsService: AlbumsService) {}
+  constructor(
+    private albumsService: AlbumsService,
+    private trackService: TracksService,
+  ) {}
 
   @Get()
   listAlbums() {
@@ -66,6 +70,26 @@ export class AlbumsController {
     }
 
     await this.albumsService.deleteAlbum(id);
-    //TODO: delete album from favorites
+    const tracks = await this.trackService.findAll();
+    for (const track of tracks) {
+      if (track.albumId === id) {
+        await this.trackService.updateTrack(track.id, {
+          ...track,
+          albumId: null,
+        });
+      }
+    }
+    //the 2-nd implementation:
+    // await Promise.all(
+    //   tracks.map(async (track) => {
+    //     if (track.albumId === id) {
+    //       const updatedTrack = await this.trackService.updateTrack(track.id, {
+    //         ...track,
+    //         albumId: null,
+    //       });
+    //       return updatedTrack;
+    //     }
+    //   }),
+    // );
   }
 }
