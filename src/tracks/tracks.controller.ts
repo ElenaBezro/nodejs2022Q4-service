@@ -10,13 +10,17 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { FavoritesService } from 'src/favorites/favorites.service';
 import { CreateTrackDto } from './dtos/create-track.dto';
 import { UpdateTrackDto } from './dtos/update-track.dto';
 import { TracksService } from './tracks.service';
 
 @Controller('track')
 export class TracksController {
-  constructor(private tracksService: TracksService) {}
+  constructor(
+    private tracksService: TracksService,
+    private favoritesService: FavoritesService,
+  ) {}
 
   @Get()
   listTracks() {
@@ -65,7 +69,11 @@ export class TracksController {
       throw new NotFoundException('Track not found');
     }
 
+    // delete trackId from favorites
+    const favorites = await this.favoritesService.findAllIds();
+    if (favorites.tracks.includes(id)) {
+      await this.favoritesService.deleteTrack(id);
+    }
     await this.tracksService.deleteTrack(id);
-    //TODO: delete track from favorites
   }
 }

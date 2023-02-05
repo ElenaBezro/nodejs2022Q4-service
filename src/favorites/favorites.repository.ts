@@ -8,17 +8,17 @@ export class FavoritesRepository {
   private favorites: Favorites = { artists: [], albums: [], tracks: [] };
 
   async findTrack(id: string) {
-    const result = this.favorites.tracks.includes(id);
-    return result;
+    const isFavorite = this.favorites.tracks.includes(id);
+    return isFavorite;
   }
 
   async findArtist(id: string) {
-    const result = this.favorites.artists.includes(id);
-    return result;
+    const isFavorite = this.favorites.artists.includes(id);
+    return isFavorite;
   }
   async findAlbum(id: string) {
-    const result = this.favorites.albums.includes(id);
-    return result;
+    const isFavorite = this.favorites.albums.includes(id);
+    return isFavorite;
   }
 
   async findAll() {
@@ -43,24 +43,26 @@ export class FavoritesRepository {
   }
 
   async deleteTrack(id: string) {
-    const isFavorite = this.favorites.tracks.includes(id);
-    return (
-      !isFavorite && this.favorites.tracks.filter((trackId) => trackId !== id)
-    );
+    if (this.favorites.tracks.includes(id)) {
+      this.favorites.tracks = this.favorites.tracks.filter(
+        (trackId) => trackId !== id,
+      );
+    }
   }
 
   async deleteArtist(id: string) {
-    const isFavorite = this.favorites.artists.includes(id);
-    return (
-      !isFavorite &&
-      this.favorites.artists.filter((artistId) => artistId !== id)
-    );
+    if (this.favorites.artists.includes(id)) {
+      this.favorites.artists = this.favorites.artists.filter(
+        (artistId) => artistId !== id,
+      );
+    }
   }
 
   async deleteAlbum(id: string) {
-    const isFavorite = this.favorites.albums.includes(id);
-    return (
-      !isFavorite && this.favorites.albums.filter((albumId) => albumId !== id)
-    );
+    if (this.favorites.albums.includes(id)) {
+      this.favorites.albums = this.favorites.albums.filter(
+        (albumId) => albumId !== id,
+      );
+    }
   }
 }

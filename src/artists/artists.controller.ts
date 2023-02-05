@@ -10,6 +10,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { FavoritesService } from 'src/favorites/favorites.service';
+import { Favorites } from 'src/favorites/types';
 import { TracksService } from 'src/tracks/tracks.service';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dtos/create-artist.dto';
@@ -20,6 +22,7 @@ export class ArtistsController {
   constructor(
     private artistsService: ArtistsService,
     private trackService: TracksService,
+    private favoritesService: FavoritesService,
   ) {}
 
   @Get()
@@ -68,6 +71,8 @@ export class ArtistsController {
     }
 
     await this.artistsService.deleteArtist(id);
+
+    // delete artistId from tracks fields
     const tracks = await this.trackService.findAll();
     for (const track of tracks) {
       if (track.artistId === id) {
@@ -76,6 +81,15 @@ export class ArtistsController {
           artistId: null,
         });
       }
+    }
+
+    // delete artistId from favorites
+    const favorites: Favorites = await this.favoritesService.findAllIds();
+    if (favorites.artists.includes(id)) {
+      console.log(favorites.artists.includes(id));
+      await this.favoritesService.deleteArtist(id);
+      console.log('...deleting artist from favs');
+      console.log(favorites.artists.includes(id));
     }
   }
 }

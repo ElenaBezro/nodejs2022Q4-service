@@ -24,8 +24,8 @@ export class FavoritesController {
   ) {}
 
   @Get()
-  async listFavorites() {
-    return await this.favoritesService.findAll();
+  listFavorites() {
+    return this.favoritesService.findAll();
   }
 
   @Post('/track/:id')
@@ -58,30 +58,33 @@ export class FavoritesController {
   @Delete('track/:id')
   @HttpCode(204)
   async deleteTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const track = await this.favoritesService.findTrack(id);
+    const isFavorite = await this.favoritesService.findTrack(id);
 
-    if (!track) {
+    if (!isFavorite) {
       throw new NotFoundException('Is not in favorites');
     }
+    await this.favoritesService.deleteTrack(id);
   }
 
   @Delete('artist/:id')
   @HttpCode(204)
   async deleteArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const artist = await this.favoritesService.findArtist(id);
+    const isFavorite = await this.favoritesService.findArtist(id);
 
-    if (!artist) {
+    if (!isFavorite) {
       throw new NotFoundException('Is not in favorites');
     }
+    await this.favoritesService.deleteArtist(id);
   }
 
   @Delete('album/:id')
   @HttpCode(204)
   async deleteAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    const album = await this.favoritesService.findAlbum(id);
+    const isFavorite = await this.favoritesService.findAlbum(id);
 
-    if (!album) {
+    if (!isFavorite) {
       throw new NotFoundException('Is not in favorites');
     }
+    await this.favoritesService.deleteAlbum(id);
   }
 }

@@ -10,6 +10,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { FavoritesService } from 'src/favorites/favorites.service';
 import { TracksService } from 'src/tracks/tracks.service';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dtos/create-album.dto';
@@ -20,6 +21,7 @@ export class AlbumsController {
   constructor(
     private albumsService: AlbumsService,
     private trackService: TracksService,
+    private favoritesService: FavoritesService,
   ) {}
 
   @Get()
@@ -70,6 +72,8 @@ export class AlbumsController {
     }
 
     await this.albumsService.deleteAlbum(id);
+
+    // delete albumId from tracks fields
     const tracks = await this.trackService.findAll();
     for (const track of tracks) {
       if (track.albumId === id) {
@@ -79,17 +83,11 @@ export class AlbumsController {
         });
       }
     }
-    //the 2-nd implementation:
-    // await Promise.all(
-    //   tracks.map(async (track) => {
-    //     if (track.albumId === id) {
-    //       const updatedTrack = await this.trackService.updateTrack(track.id, {
-    //         ...track,
-    //         albumId: null,
-    //       });
-    //       return updatedTrack;
-    //     }
-    //   }),
-    // );
+
+    // delete albumId from favorites
+    const favorites = await this.favoritesService.findAllIds();
+    if (favorites.albums.includes(id)) {
+      await this.favoritesService.deleteAlbum(id);
+    }
   }
 }
