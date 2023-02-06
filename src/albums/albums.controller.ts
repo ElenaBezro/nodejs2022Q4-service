@@ -30,7 +30,6 @@ export class AlbumsController {
   }
 
   @Post()
-  //TODO: check id in payload
   createAlbum(@Body() body: CreateAlbumDto) {
     return this.albumsService.create(body);
   }
@@ -46,7 +45,6 @@ export class AlbumsController {
   }
 
   @Put('/:id')
-  //TODO: check id in payload
   async updateAlbum(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateAlbumDto,
