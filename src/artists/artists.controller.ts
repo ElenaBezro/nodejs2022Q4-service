@@ -86,10 +86,7 @@ export class ArtistsController {
     // delete artistId from favorites
     const favorites: Favorites = await this.favoritesService.findAllIds();
     if (favorites.artists.includes(id)) {
-      console.log(favorites.artists.includes(id));
       await this.favoritesService.deleteArtist(id);
-      console.log('...deleting artist from favs');
-      console.log(favorites.artists.includes(id));
     }
   }
 }
