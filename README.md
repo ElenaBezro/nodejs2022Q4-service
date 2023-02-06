@@ -19,13 +19,14 @@ npm install
 
 ## Running application
 
+Rename file ".env.example" to ".env"
+
 ```
 npm start
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+App runs on port 4000 by default. You can change port in the ".env" file.
+You can open OpenAPI documentation by inserting the contents of "doc/api.yaml" in the editor https://editor.swagger.io/.
 
 ## Testing
 
@@ -41,18 +42,6 @@ To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
 ```
 
 ### Auto-fix and format
