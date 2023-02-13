@@ -2,7 +2,9 @@ version: '3.0'
 services:
   node:
     build: .
-    networks: -backend
+    restart: on-failure
+    networks:
+      - my-network
     ports:
       - ${PORT}:${PORT}
     depends_on:
@@ -11,7 +13,8 @@ services:
       - PORT=8080
   postgres:
     build: ./database/
-    networks: -backend
+    networks:
+      - my-network
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:
@@ -20,6 +23,6 @@ services:
       POSRGRES_DB: ${POSRGRES_DB}
 
 networks:
-  backend:
+  my-network:
     driver: bridge
 

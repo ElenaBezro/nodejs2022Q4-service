@@ -19,8 +19,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "docker:build": "docker build -t mybuildimage .",
-    "docker:scan": "docker scan mybuildimage",
+    "docker:build": "docker build -t elenabezro/mybuildimage .",
+    "docker:scan": "docker scan elenabezro/mybuildimage",
     "docker:compose": "docker-compose up --build"
   },
   "dependencies": {
