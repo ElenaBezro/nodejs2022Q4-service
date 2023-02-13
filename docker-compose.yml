@@ -1,0 +1,25 @@
+version: '3.0'
+services:
+  node:
+    build: .
+    networks: -backend
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    environment:
+      - PORT=8080
+  postgres:
+    build: ./database/
+    networks: -backend
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSRGRES_USER: ${POSRGRES_USER}
+      POSRGRES_PASSWORD: ${POSRGRES_POSRGRES_PASSWORD}
+      POSRGRES_DB: ${POSRGRES_DB}
+
+networks:
+  backend:
+    driver: bridge
+
