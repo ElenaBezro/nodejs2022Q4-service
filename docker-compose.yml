@@ -10,7 +10,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - PORT=8080
+      - PORT=${NODE_PORT}
   postgres:
     build: ./database/
     networks:
