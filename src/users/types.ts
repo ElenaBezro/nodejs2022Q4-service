@@ -1,3 +1,4 @@
+// TODO: delete and use DTOs instead
 interface User {
   id: string; // uuid v4
   login: string;

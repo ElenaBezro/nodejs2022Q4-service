@@ -11,13 +11,16 @@ import {
   HttpCode,
   ForbiddenException,
 } from '@nestjs/common';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
+import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 
 @Controller('user')
+@Serialize(UserDto)
 export class UsersController {
-  constructor(public usersService: UsersService) {}
+  constructor(private usersService: UsersService) {}
 
   @Get()
   listUsers() {
@@ -31,45 +34,17 @@ export class UsersController {
 
   @Get('/:id')
   async getUser(@Param('id', ParseUUIDPipe) id: string) {
-    const user = await this.usersService.findOne(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+    return await this.usersService.findOne(id);
   }
 
   @Put('/:id')
-  async updatePassword(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() body: UpdatePasswordDto,
-  ) {
-    const user = await this.usersService.findOne(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    const userWithNewPassword = await this.usersService.updatePassword(
-      id,
-      body,
-    );
-    if (!userWithNewPassword) {
-      throw new ForbiddenException('Wrong password');
-    }
-
-    return userWithNewPassword;
+  async updatePassword(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdatePasswordDto) {
+    return await this.usersService.updatePassword(id, body);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
-    const user = await this.usersService.findOne(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
     await this.usersService.deleteUser(id);
   }
 }
