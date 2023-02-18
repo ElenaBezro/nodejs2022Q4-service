@@ -1,17 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+
+import { AlbumsService } from '../albums/albums.service';
+import { ArtistsService } from '../artists/artists.service';
+import { TracksService } from '../tracks/tracks.service';
+
 import { FavoritesRepository } from './favorites.repository';
-import { AlbumsService } from 'src/albums/albums.service';
-import { ArtistsService } from 'src/artists/artists.service';
-import { TracksService } from 'src/tracks/tracks.service';
 import { FavoritesResponse } from './types';
 
 @Injectable()
 export class FavoritesService {
   constructor(
     private favoritesRepo: FavoritesRepository,
-    private artistsService: ArtistsService,
-    private albumsService: AlbumsService,
-    private tracksService: TracksService,
+    @Inject(forwardRef(() => ArtistsService)) private artistsService: ArtistsService,
+    @Inject(forwardRef(() => AlbumsService)) private albumsService: AlbumsService,
+    @Inject(forwardRef(() => TracksService)) private tracksService: TracksService,
   ) {}
 
   async findTrack(id: string) {
@@ -42,9 +44,7 @@ export class FavoritesService {
     );
 
     favoritesResponse.artists = await Promise.all(
-      favorites.artists.map((artistId) =>
-        this.artistsService.findOne(artistId),
-      ),
+      favorites.artists.map((artistId) => this.artistsService.findOne(artistId)),
     );
 
     favoritesResponse.tracks = await Promise.all(

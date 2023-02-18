@@ -3,9 +3,9 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { TracksController } from './tracks.controller';
 import { TracksRepository } from './tracks.repository';
-import { FavoritesModule } from 'src/favorites/favorites.module';
-import { ArtistsModule } from 'src/artists/artists.module';
-import { AlbumsModule } from 'src/albums/albums.module';
+import { FavoritesModule } from '../favorites/favorites.module';
+import { ArtistsModule } from '../artists/artists.module';
+import { AlbumsModule } from '../albums/albums.module';
 import { Track } from './track.entity';
 
 @Module({

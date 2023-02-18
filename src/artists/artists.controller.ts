@@ -10,9 +10,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { Favorites } from 'src/favorites/types';
-import { TracksService } from 'src/tracks/tracks.service';
+import { FavoritesService } from '../favorites/favorites.service';
+import { Favorites } from '../favorites/types';
+import { TracksService } from '../tracks/tracks.service';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dtos/create-artist.dto';
 import { UpdateArtistDto } from './dtos/update-artist.dto';
@@ -46,10 +46,7 @@ export class ArtistsController {
   }
 
   @Put('/:id')
-  async updateArtist(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() body: UpdateArtistDto,
-  ) {
+  async updateArtist(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateArtistDto) {
     const artist = await this.artistsService.findOne(id);
 
     if (!artist) {

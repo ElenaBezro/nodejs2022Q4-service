@@ -8,11 +8,7 @@ import { ArtistsService } from './artists.service';
 import { Artist } from './artist.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Artist]),
-    TracksModule,
-    forwardRef(() => FavoritesModule),
-  ],
+  imports: [TypeOrmModule.forFeature([Artist]), TracksModule, forwardRef(() => FavoritesModule)],
   controllers: [ArtistsController],
   providers: [ArtistsService, ArtistsRepository],
   exports: [ArtistsService],
