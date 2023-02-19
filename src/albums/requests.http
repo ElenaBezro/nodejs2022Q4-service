@@ -20,4 +20,17 @@ content-type: application/json
   "name": "newAlbum",
   "year": 1800,
   "artistId": null
-}
+} 
+
+### Create a new artist
+
+POST http://localhost:4000/artist
+content-type: application/json
+
+{
+  "name": "newArtist",
+  "grammy": false
+} 
+
+### Find artist
+GET http://localhost:4000/artist/c1fc4c35-19e0-405e-83c7-0c4a05c7fe7b

@@ -54,7 +54,7 @@ export class AlbumsService {
       if (!artist) throw new NotFoundException('artistId invalid');
     }
 
-    return this.albumsRepo.save(album);
+    return this.albumsRepo.save({ id, ...body });
   }
 
   async deleteAlbum(id: string) {

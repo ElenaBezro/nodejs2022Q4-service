@@ -4,13 +4,16 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 export class Track {
   @PrimaryGeneratedColumn('uuid')
   id: string; // uuid v4
+
   @Column()
   name: string;
-  @Column()
+
+  @Column({ nullable: true })
   artistId: string | null; // refers to Artist
-  @Column()
+
+  @Column({ nullable: true })
   albumId: string | null; // refers to Album
+
   @Column()
   duration: number; // integer number}
 }
-

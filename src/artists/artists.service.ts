@@ -1,8 +1,8 @@
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { Favorites } from 'src/favorites/types';
-import { TracksService } from 'src/tracks/tracks.service';
+import { FavoritesService } from '../favorites/favorites.service';
+import { Favorites } from '../favorites/types';
+import { TracksService } from '../tracks/tracks.service';
 import { Repository } from 'typeorm';
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dtos/create-artist.dto';
@@ -44,14 +44,12 @@ export class ArtistsService {
     const artist = await this.findOne(id);
 
     // delete artistId from tracks fields
-    const tracks = await this.trackService.findAll();
+    const tracks = await this.trackService.findByArtistId(id);
     for (const track of tracks) {
-      if (track.artistId === id) {
-        await this.trackService.updateTrack(track.id, {
-          ...track,
-          artistId: null,
-        });
-      }
+      await this.trackService.updateTrack(track.id, {
+        ...track,
+        artistId: null,
+      });
     }
 
     // delete artistId from favorites

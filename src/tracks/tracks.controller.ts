@@ -32,12 +32,7 @@ export class TracksController {
 
   @Get('/:id')
   async getTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const track = await this.tracksService.findOne(id);
-
-    if (!track) {
-      throw new NotFoundException('Track not found');
-    }
-    return track;
+    return await this.tracksService.findOne(id);
   }
 
   @Put('/:id')
@@ -57,17 +52,6 @@ export class TracksController {
   @Delete('/:id')
   @HttpCode(204)
   async deleteTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const track = await this.tracksService.findOne(id);
-
-    if (!track) {
-      throw new NotFoundException('Track not found');
-    }
-
-    // delete trackId from favorites
-    const favorites = await this.favoritesService.findAllIds();
-    if (favorites.tracks.includes(id)) {
-      await this.favoritesService.deleteTrack(id);
-    }
-    await this.tracksService.deleteTrack(id);
+    return await this.tracksService.deleteTrack(id);
   }
 }

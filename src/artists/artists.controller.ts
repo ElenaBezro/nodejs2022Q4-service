@@ -18,18 +18,18 @@ export class ArtistsController {
   }
 
   @Get('/:id')
-  async getArtist(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.artistsService.findOne(id);
+  getArtist(@Param('id', ParseUUIDPipe) id: string) {
+    return this.artistsService.findOne(id);
   }
 
   @Put('/:id')
-  async updateArtist(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateArtistDto) {
-    return await this.artistsService.updateArtist(id, body);
+  updateArtist(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateArtistDto) {
+    return this.artistsService.updateArtist(id, body);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   async deleteArtist(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.artistsService.deleteArtist(id);
+    await this.artistsService.deleteArtist(id);
   }
 }
