@@ -1,29 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  NotFoundException,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Put,
-} from '@nestjs/common';
-import { FavoritesService } from '../favorites/favorites.service';
-import { Favorites } from '../favorites/types';
-import { TracksService } from '../tracks/tracks.service';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dtos/create-artist.dto';
 import { UpdateArtistDto } from './dtos/update-artist.dto';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(
-    private artistsService: ArtistsService,
-    private trackService: TracksService,
-    private favoritesService: FavoritesService,
-  ) {}
+  constructor(private artistsService: ArtistsService) {}
 
   @Get()
   listArtists() {
@@ -37,53 +19,17 @@ export class ArtistsController {
 
   @Get('/:id')
   async getArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const artist = await this.artistsService.findOne(id);
-
-    if (!artist) {
-      throw new NotFoundException('Artist not found');
-    }
-    return artist;
+    return await this.artistsService.findOne(id);
   }
 
   @Put('/:id')
   async updateArtist(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateArtistDto) {
-    const artist = await this.artistsService.findOne(id);
-
-    if (!artist) {
-      throw new NotFoundException('Artist not found');
-    }
-
-    const updatedArtist = await this.artistsService.updateArtist(id, body);
-
-    return updatedArtist;
+    return await this.artistsService.updateArtist(id, body);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   async deleteArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const artist = await this.artistsService.findOne(id);
-
-    if (!artist) {
-      throw new NotFoundException('Artist not found');
-    }
-
-    await this.artistsService.deleteArtist(id);
-
-    // delete artistId from tracks fields
-    const tracks = await this.trackService.findAll();
-    for (const track of tracks) {
-      if (track.artistId === id) {
-        await this.trackService.updateTrack(track.id, {
-          ...track,
-          artistId: null,
-        });
-      }
-    }
-
-    // delete artistId from favorites
-    const favorites: Favorites = await this.favoritesService.findAllIds();
-    if (favorites.artists.includes(id)) {
-      await this.favoritesService.deleteArtist(id);
-    }
+    return await this.artistsService.deleteArtist(id);
   }
 }

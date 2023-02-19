@@ -11,4 +11,3 @@ export class Album {
   @Column()
   artistId: string | null; // refers to Artist
 }
-

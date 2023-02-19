@@ -6,6 +6,7 @@ import { Album } from './album.entity';
 import { Repository } from 'typeorm';
 import { TracksService } from '../tracks/tracks.service';
 import { FavoritesService } from '../favorites/favorites.service';
+import { CreateAlbumDto } from './dtos/create-album.dto';
 
 @Injectable()
 export class AlbumsService {
@@ -28,7 +29,7 @@ export class AlbumsService {
     return this.albumsRepo.find();
   }
 
-  async create(album: Omit<Album, 'id'>) {
+  async create(album: CreateAlbumDto) {
     const { artistId } = album;
     if (artistId) {
       const artist = await this.artistService.findOne(artistId);
