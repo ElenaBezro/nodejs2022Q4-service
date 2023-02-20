@@ -4,7 +4,6 @@ import { AlbumsModule } from '../albums/albums.module';
 import { ArtistsModule } from '../artists/artists.module';
 import { TracksModule } from '../tracks/tracks.module';
 import { FavoritesController } from './favorites.controller';
-import { FavoritesRepository } from './favorites.repository';
 import { FavoritesService } from './favorites.service';
 import { Favorites } from './favorites.entity';
 
@@ -17,6 +16,6 @@ import { Favorites } from './favorites.entity';
   ],
   controllers: [FavoritesController],
   exports: [FavoritesService],
-  providers: [FavoritesService, FavoritesRepository],
+  providers: [FavoritesService],
 })
 export class FavoritesModule {}

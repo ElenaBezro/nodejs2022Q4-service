@@ -28,6 +28,7 @@ export class UsersController {
   }
 
   @Post()
+  @Serialize(UserDto)
   createUser(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
   }

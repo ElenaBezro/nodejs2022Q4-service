@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class UserDto {
+export class ArtistDto {
   @Expose()
   id: string; // uuid v4
 

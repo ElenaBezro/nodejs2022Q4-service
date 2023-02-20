@@ -1,5 +1,18 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  NotFoundException,
+} from '@nestjs/common';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ArtistsService } from './artists.service';
+import { ArtistDto } from './dtos/artist.dto';
 import { CreateArtistDto } from './dtos/create-artist.dto';
 import { UpdateArtistDto } from './dtos/update-artist.dto';
 
@@ -13,13 +26,18 @@ export class ArtistsController {
   }
 
   @Post()
+  @Serialize(ArtistDto)
   createArtist(@Body() body: CreateArtistDto) {
     return this.artistsService.create(body);
   }
 
   @Get('/:id')
-  getArtist(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistsService.findOne(id);
+  async getArtist(@Param('id', ParseUUIDPipe) id: string) {
+    const artist = await this.artistsService.findOne(id);
+    if (!artist) {
+      throw new NotFoundException('Artist not found');
+    }
+    return artist;
   }
 
   @Put('/:id')

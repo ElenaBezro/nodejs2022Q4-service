@@ -10,12 +10,15 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { FavoritesService } from '../favorites/favorites.service';
 import { CreateTrackDto } from './dtos/create-track.dto';
+import { TrackDto } from './dtos/track.dto';
 import { UpdateTrackDto } from './dtos/update-track.dto';
 import { TracksService } from './tracks.service';
 
 @Controller('track')
+@Serialize(TrackDto)
 export class TracksController {
   constructor(private tracksService: TracksService, private favoritesService: FavoritesService) {}
 
@@ -32,7 +35,11 @@ export class TracksController {
 
   @Get('/:id')
   async getTrack(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.tracksService.findOne(id);
+    const track = await this.tracksService.findOne(id);
+    if (!track) {
+      throw new NotFoundException('Track not found');
+    }
+    return track;
   }
 
   @Put('/:id')
@@ -44,14 +51,12 @@ export class TracksController {
       throw new NotFoundException('Track not found');
     }
 
-    const updatedTrack = await this.tracksService.updateTrack(id, body);
-
-    return updatedTrack;
+    return await this.tracksService.updateTrack(id, body);
   }
 
   @Delete('/:id')
   @HttpCode(204)
-  async deleteTrack(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.tracksService.deleteTrack(id);
+  deleteTrack(@Param('id', ParseUUIDPipe) id: string) {
+    return this.tracksService.deleteTrack(id);
   }
 }

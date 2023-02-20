@@ -18,7 +18,7 @@ import { Track } from './tracks/track.entity';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [User, Album, Artist, Track],
+      entities: [User, Album, Artist, Track, Favorites],
       synchronize: true,
     }),
     AlbumsModule,

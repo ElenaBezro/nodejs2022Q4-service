@@ -1,6 +1,7 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
+import { Album } from '../album.entity';
 
-export class UserDto {
+export class AlbumDto {
   @Expose()
   id: string; // uuid v4
 
@@ -10,6 +11,7 @@ export class UserDto {
   @Expose()
   name: string;
 
+  @Transform(({ obj }) => (obj as Album).artist?.id ?? null)
   @Expose()
   artistId: string | null;
 }

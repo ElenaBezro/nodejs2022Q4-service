@@ -1,5 +1,18 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  NotFoundException,
+} from '@nestjs/common';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AlbumsService } from './albums.service';
+import { AlbumDto } from './dtos/album.dto';
 import { CreateAlbumDto } from './dtos/create-album.dto';
 import { UpdateAlbumDto } from './dtos/update-album.dto';
 
@@ -13,18 +26,23 @@ export class AlbumsController {
   }
 
   @Post()
+  @Serialize(AlbumDto)
   createAlbum(@Body() body: CreateAlbumDto) {
     return this.albumsService.create(body);
   }
 
   @Get('/:id')
   async getAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.albumsService.findOne(id);
+    const album = await this.albumsService.findOne(id);
+    if (!album) {
+      throw new NotFoundException('Album not found');
+    }
+    return album;
   }
 
   @Put('/:id')
-  async updateAlbum(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateAlbumDto) {
-    return await this.albumsService.updateAlbum(id, body);
+  updateAlbum(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateAlbumDto) {
+    return this.albumsService.updateAlbum(id, body);
   }
 
   @Delete('/:id')

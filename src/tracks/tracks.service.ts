@@ -17,18 +17,16 @@ export class TracksService {
     @Inject(forwardRef(() => AlbumsService)) private albumService: AlbumsService,
   ) {}
 
-  async findOne(id: string) {
-    const track = await this.tracksRepo.findOneBy({ id });
-
-    if (!track) {
-      throw new NotFoundException('Track not found');
-    }
-
-    return track;
+  findOne(id: string) {
+    return this.tracksRepo.findOneBy({ id });
   }
 
   findByArtistId(artistId: string) {
-    return this.tracksRepo.find({ where: { artistId } });
+    return this.tracksRepo.find({ where: { artist: { id: artistId } }, relations: { album: true, artist: true } });
+  }
+
+  findByAlbumId(albumId: string) {
+    return this.tracksRepo.find({ where: { album: { id: albumId } }, relations: { album: true, artist: true } });
   }
 
   findAll() {
@@ -37,37 +35,53 @@ export class TracksService {
 
   async create(track: CreateTrackDto) {
     const { artistId, albumId } = track;
-    if (artistId) {
-      const artist = await this.artistService.findOne(artistId);
-      if (!artist) throw new NotFoundException('artistId invalid');
-    }
-    if (albumId) {
-      const album = await this.albumService.findOne(albumId);
-      if (!album) throw new NotFoundException('albumId invalid');
-    }
     const newTrack = this.tracksRepo.create(track);
-    return this.tracksRepo.save(newTrack);
+
+    if (artistId) {
+      newTrack.artist = await this.artistService.findOne(artistId);
+      if (!newTrack.artist) throw new NotFoundException('artistId invalid');
+    }
+
+    if (albumId) {
+      newTrack.album = await this.albumService.findOne(albumId);
+      if (!newTrack.album) throw new NotFoundException('albumId invalid');
+    }
+
+    return this.tracksRepo.manager.save(newTrack);
   }
 
   async updateTrack(id: string, body: UpdateTrackDto) {
-    const { artistId, albumId } = body;
+    const { artistId, albumId, duration, name } = body;
+
+    const track: Track = { id, duration, name };
+
     if (artistId) {
-      const artist = await this.artistService.findOne(artistId);
-      if (!artist) throw new NotFoundException('artistId invalid');
+      track.artist = await this.artistService.findOne(artistId);
+      if (!track.artist) throw new NotFoundException('artistId invalid');
+    } else if (artistId === null) {
+      track.artist = null;
     }
+
     if (albumId) {
-      const album = await this.albumService.findOne(albumId);
-      if (!album) throw new NotFoundException('albumId invalid');
+      track.album = await this.albumService.findOne(albumId);
+      if (!track.album) throw new NotFoundException('albumId invalid');
+    } else if (albumId === null) {
+      track.album = null;
     }
-    return this.tracksRepo.save({ id, ...body });
+
+    return this.tracksRepo.save(track);
   }
 
   async deleteTrack(id: string) {
     const track = await this.findOne(id);
 
+    if (!track) {
+      throw new NotFoundException('Track not found');
+    }
+
     // delete trackId from favorites
-    const favorites = await this.favoritesService.findAllIds();
-    if (favorites.tracks.includes(id)) {
+    const favoriteTrack = await this.favoritesService.findTrack(id);
+    if (favoriteTrack) {
       await this.favoritesService.deleteTrack(id);
     }
 

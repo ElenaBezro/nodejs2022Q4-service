@@ -33,4 +33,4 @@ content-type: application/json
 } 
 
 ### Find artist
-GET http://localhost:4000/artist/c1fc4c35-19e0-405e-83c7-0c4a05c7fe7b
+GET http://localhost:4000/artist/fd8412ad-1945-438e-bf31-590966ae119b

@@ -5,6 +5,7 @@ import { UpdateAlbumDto } from './dtos/update-album.dto';
 import { Album } from './album.entity';
 import { Repository } from 'typeorm';
 import { TracksService } from '../tracks/tracks.service';
+import { Artist } from '../artists/artist.entity';
 import { FavoritesService } from '../favorites/favorites.service';
 import { CreateAlbumDto } from './dtos/create-album.dto';
 
@@ -12,31 +13,30 @@ import { CreateAlbumDto } from './dtos/create-album.dto';
 export class AlbumsService {
   constructor(
     @InjectRepository(Album) public albumsRepo: Repository<Album>,
-    private artistService: ArtistsService,
+    @Inject(forwardRef(() => ArtistsService)) private artistService: ArtistsService,
     @Inject(forwardRef(() => TracksService)) private trackService: TracksService,
     @Inject(forwardRef(() => FavoritesService)) private favoritesService: FavoritesService,
   ) {}
 
-  async findOne(id: string) {
-    const album = await this.albumsRepo.findOneBy({ id });
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-    return album;
+  findOne(id: string): Promise<Album | null> {
+    return this.albumsRepo.findOneBy({ id });
   }
 
   findAll() {
     return this.albumsRepo.find();
   }
 
+  findByArtistId(artistId: string) {
+    return this.albumsRepo.find({ where: { artist: { id: artistId } } });
+  }
+
   async create(album: CreateAlbumDto) {
-    const { artistId } = album;
-    if (artistId) {
-      const artist = await this.artistService.findOne(artistId);
-      // const artist = await this.artistService.findOneBy({artistId});
+    let artist: Artist | undefined;
+    if (album.artistId) {
+      artist = await this.artistService.findOne(album.artistId);
       if (!artist) throw new NotFoundException('artistId invalid');
     }
-    const newAlbum = this.albumsRepo.create(album);
+    const newAlbum = this.albumsRepo.create({ ...album, artist });
 
     return this.albumsRepo.save(newAlbum);
   }
@@ -48,32 +48,39 @@ export class AlbumsService {
       throw new NotFoundException('Album not found');
     }
 
+    Object.assign(album, body);
+
     const { artistId } = body;
     if (artistId) {
-      const artist = await this.artistService.findOne(artistId);
-      if (!artist) throw new NotFoundException('artistId invalid');
+      album.artist = await this.artistService.findOne(artistId);
+      if (!album.artist) throw new NotFoundException('artistId invalid');
+    } else if (artistId === null) {
+      album.artist = null;
     }
 
-    return this.albumsRepo.save({ id, ...body });
+    return this.albumsRepo.save(album);
   }
 
   async deleteAlbum(id: string) {
     const album = await this.findOne(id);
 
+    if (!album) {
+      throw new NotFoundException('Album not found');
+    }
+
     // delete albumId from tracks fields
-    const tracks = await this.trackService.findAll();
+    const tracks = await this.trackService.findByAlbumId(id);
     for (const track of tracks) {
-      if (track.albumId === id) {
-        await this.trackService.updateTrack(track.id, {
-          ...track,
-          albumId: null,
-        });
-      }
+      await this.trackService.updateTrack(track.id, {
+        ...track,
+        artistId: track.artist?.id,
+        albumId: null,
+      });
     }
 
     // delete albumId from favorites
-    const favorites = await this.favoritesService.findAllIds();
-    if (favorites.albums.includes(id)) {
+    const favoriteAlbum = await this.favoritesService.findAlbum(id);
+    if (favoriteAlbum) {
       await this.favoritesService.deleteAlbum(id);
     }
 
