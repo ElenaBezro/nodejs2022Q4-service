@@ -13,6 +13,7 @@ services:
       - PORT=${NODE_PORT}
   postgres:
     build: ./database/
+    restart: on-failure
     networks:
       - my-network
     ports:
