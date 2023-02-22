@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { AfterInsert, AfterRemove, AfterUpdate, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,10 +15,12 @@ export class User {
   @Column({ default: 1 })
   version: number; // integer number, increments on update
 
-  @Column()
+  @Column({ type: 'bigint' })
+  @Type(() => Number)
   createdAt: number; // timestamp of creation
 
-  @Column()
+  @Column({ type: 'bigint' })
+  @Type(() => Number)
   updatedAt: number; // timestamp of last update
 
   @AfterInsert()

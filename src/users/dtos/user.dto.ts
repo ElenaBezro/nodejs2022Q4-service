@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class UserDto {
   @Expose()
@@ -8,9 +8,11 @@ export class UserDto {
   login: string;
 
   @Expose()
+  @Type(() => Number)
   createdAt: number;
 
   @Expose()
+  @Type(() => Number)
   updatedAt: number;
 
   @Expose()
