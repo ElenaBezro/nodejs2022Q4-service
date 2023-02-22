@@ -1,6 +1,9 @@
-### Create a new user
+@hostname = localhost
+@port = 4000
+@host = {{hostname}}:{{port}}
 
-POST http://localhost:4000/user
+### Create a new user
+POST http://{{host}}/user
 content-type: application/json
 
 {
@@ -9,11 +12,11 @@ content-type: application/json
 }
 
 ### Find user
-GET http://localhost:4000/user/cac48389-7c9d-4dec-a4e1-4102babbbbba
+GET http://{{host}}/user/a2b79c60-b944-48a0-847e-db6c454a15d2
 
 ### Create a new album
 
-POST http://localhost:4000/album
+POST http://{{host}}/album
 content-type: application/json
 
 {

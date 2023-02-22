@@ -1,16 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  NotFoundException,
-  ParseUUIDPipe,
-  Put,
-  Delete,
-  HttpCode,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, ParseUUIDPipe, Put, Delete, HttpCode } from '@nestjs/common';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';

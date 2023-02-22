@@ -31,9 +31,7 @@ export class FavoritesRepository {
   }
 
   async addArtist(artistId: string) {
-    const isFavorite = this.favorites.artists.find(
-      (artist) => artist === artistId,
-    );
+    const isFavorite = this.favorites.artists.find((artist) => artist === artistId);
     !isFavorite && this.favorites.artists.push(artistId);
   }
 
@@ -44,25 +42,19 @@ export class FavoritesRepository {
 
   async deleteTrack(id: string) {
     if (this.favorites.tracks.includes(id)) {
-      this.favorites.tracks = this.favorites.tracks.filter(
-        (trackId) => trackId !== id,
-      );
+      this.favorites.tracks = this.favorites.tracks.filter((trackId) => trackId !== id);
     }
   }
 
   async deleteArtist(id: string) {
     if (this.favorites.artists.includes(id)) {
-      this.favorites.artists = this.favorites.artists.filter(
-        (artistId) => artistId !== id,
-      );
+      this.favorites.artists = this.favorites.artists.filter((artistId) => artistId !== id);
     }
   }
 
   async deleteAlbum(id: string) {
     if (this.favorites.albums.includes(id)) {
-      this.favorites.albums = this.favorites.albums.filter(
-        (albumId) => albumId !== id,
-      );
+      this.favorites.albums = this.favorites.albums.filter((albumId) => albumId !== id);
     }
   }
 }
