@@ -25,7 +25,7 @@ npm install
 Rename file ".env.example" to ".env"
 
 ```
-npm docker:compose
+npm run docker:compose
 ```
 
 App runs on port 4000 by default. You can change port in the ".env" file.
