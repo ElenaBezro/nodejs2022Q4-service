@@ -4,25 +4,21 @@ import {
   Delete,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
+  NotFoundException,
 } from '@nestjs/common';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { TracksService } from 'src/tracks/tracks.service';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AlbumsService } from './albums.service';
+import { AlbumDto } from './dtos/album.dto';
 import { CreateAlbumDto } from './dtos/create-album.dto';
 import { UpdateAlbumDto } from './dtos/update-album.dto';
 
 @Controller('album')
 export class AlbumsController {
-  constructor(
-    private albumsService: AlbumsService,
-    private trackService: TracksService,
-    private favoritesService: FavoritesService,
-  ) {}
+  constructor(private albumsService: AlbumsService) {}
 
   @Get()
   listAlbums() {
@@ -30,6 +26,7 @@ export class AlbumsController {
   }
 
   @Post()
+  @Serialize(AlbumDto)
   createAlbum(@Body() body: CreateAlbumDto) {
     return this.albumsService.create(body);
   }
@@ -37,7 +34,6 @@ export class AlbumsController {
   @Get('/:id')
   async getAlbum(@Param('id', ParseUUIDPipe) id: string) {
     const album = await this.albumsService.findOne(id);
-
     if (!album) {
       throw new NotFoundException('Album not found');
     }
@@ -45,47 +41,13 @@ export class AlbumsController {
   }
 
   @Put('/:id')
-  async updateAlbum(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() body: UpdateAlbumDto,
-  ) {
-    const album = await this.albumsService.findOne(id);
-
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-
-    const updatedAlbum = await this.albumsService.updateAlbum(id, body);
-
-    return updatedAlbum;
+  updateAlbum(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateAlbumDto) {
+    return this.albumsService.updateAlbum(id, body);
   }
 
   @Delete('/:id')
   @HttpCode(204)
   async deleteAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    const album = await this.albumsService.findOne(id);
-
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-
     await this.albumsService.deleteAlbum(id);
-
-    // delete albumId from tracks fields
-    const tracks = await this.trackService.findAll();
-    for (const track of tracks) {
-      if (track.albumId === id) {
-        await this.trackService.updateTrack(track.id, {
-          ...track,
-          albumId: null,
-        });
-      }
-    }
-
-    // delete albumId from favorites
-    const favorites = await this.favoritesService.findAllIds();
-    if (favorites.albums.includes(id)) {
-      await this.favoritesService.deleteAlbum(id);
-    }
   }
 }

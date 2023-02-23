@@ -1,0 +1,26 @@
+@hostname = localhost
+@port = 4000
+@host = {{hostname}}:{{port}}
+
+### Create a new user
+POST http://{{host}}/user
+content-type: application/json
+
+{
+  "login": "newUser",
+  "password": "dghakad"
+}
+
+### Find user
+GET http://{{host}}/user/a2b79c60-b944-48a0-847e-db6c454a15d2
+
+### Create a new album
+
+POST http://{{host}}/album
+content-type: application/json
+
+{
+  "name": "newAlbum",
+  "year": 1800,
+  "artistId": null
+}

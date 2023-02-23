@@ -1,0 +1,36 @@
+### Create a new user
+
+POST http://localhost:4000/user
+content-type: application/json
+
+{
+  "login": "newUser",
+  "password": "dghakad"
+}
+
+### Find user
+GET http://localhost:4000/user/cac48389-7c9d-4dec-a4e1-4102babbbbba
+
+### Create a new album
+
+POST http://localhost:4000/album
+content-type: application/json
+
+{
+  "name": "newAlbum",
+  "year": 1800,
+  "artistId": null
+} 
+
+### Create a new artist
+
+POST http://localhost:4000/artist
+content-type: application/json
+
+{
+  "name": "newArtist",
+  "grammy": false
+} 
+
+### Find artist
+GET http://localhost:4000/artist/fd8412ad-1945-438e-bf31-590966ae119b

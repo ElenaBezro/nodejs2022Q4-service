@@ -1,0 +1,20 @@
+### Get all favorites
+GET http://localhost:4000/favs
+
+### Add track to favorites
+POST http://localhost:4000/favs/track/e7ff29c1-9bae-461f-9495-9d40f174b89e	
+
+### Remove track from favorites
+DELETE http://localhost:4000/favs/track/e7ff29c1-9bae-461f-9495-9d40f174b89e	
+
+### Add album to favorites
+POST http://localhost:4000/favs/album/d61dc7e6-2287-4da6-9bef-59645e43a4d6	
+
+### Remove album from favorites
+DELETE http://localhost:4000/favs/album/d61dc7e6-2287-4da6-9bef-59645e43a4d6	
+
+### Add artist to favorites
+POST http://localhost:4000/favs/artist/d903cae6-3185-435d-88a3-364f735421d1
+
+### Remove artist from favorites
+DELETE http://localhost:4000/favs/artist/d903cae6-3185-435d-88a3-364f735421d1	
